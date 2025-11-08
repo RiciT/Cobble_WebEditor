@@ -1,0 +1,6 @@
+[React Web Editor]
+ -> (HTTP POST - through api)
+    [API server - NodeJS]
+     -> (run compiler in Docker - AWS)
+        [React Web Editor - output space]
+         <- stdout
