@@ -1,19 +1,17 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
-  root: ".",
   plugins: [react()],
   server: {
-    port: 8081,
-    open: true,
-  }
-});
-
-/*    proxy: {
+    port: 8080,
+    proxy: {
       '/run': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false
       }
-    }*/
+    }
+  }
+})

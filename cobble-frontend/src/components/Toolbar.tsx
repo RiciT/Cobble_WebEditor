@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Toolbar({ onRun, running }: { onRun: (source?: string) => void; running: boolean; }) {
   return (
     <div className="p-2 bg-gray-800 border-b border-gray-700 flex items-center gap-2">

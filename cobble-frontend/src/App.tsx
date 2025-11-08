@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import CodeEditor from "./components/CodeEditor";
 import OutputPanel from "./components/OutputPanel";
 import Toolbar from "./components/Toolbar";
 
 export default function App() {
-  const [output, setOutput] = useState<{stdout: string; stderr: string; exitCode: number} | null>(null);
+  const [output, setOutput] = useState<{stdout: string; stderr: string; exitCode: number}|null>(null);
   const [running, setRunning] = useState(false);
   const [stdin, setStdin] = useState("");
-  
+
   return (
     <div className="h-screen flex flex-col">
-      <header className="flex items-center justify-between p-3 bg-gray-800 bordder-b border-gray-700">
-        <h1 className="text-lg font-semibold">Cobble - Web Editor</h1>
+      <header className="flex items-center justify-between p-3 bg-gray-800 border-b border-gray-700">
+        <h1 className="text-lg font-semibold">Cobble Web Editor</h1>
         <div className="text-sm text-gray-300">Local dev mode</div>
       </header>
 
       <Toolbar
-        onRun={() =>{
+        onRun={() => {
           setRunning(true);
           setOutput(null);
         }}
@@ -41,7 +41,7 @@ export default function App() {
       </main>
 
       <footer className="p-2 text-xs text-gray-400 bg-gray-800 border-t border-gray-700">
-        Tip: Press Ctrl+Enter to run. Auto save to localStorage.
+        Tip: Press Ctrl+Enter to run. Autosaves in localStorage.
       </footer>
     </div>
   );

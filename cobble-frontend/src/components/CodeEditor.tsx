@@ -3,11 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import { runSource } from "../lib/api";
 
-type RunResult = {stdout: string; stderr: string; exitCode: number} | null;
+type RunResult = { stdout: string; stderr: string; exitCode: number } | null;
 
 export default function CodeEditor({ onRunResult, stdin }: { onRunResult: (r: RunResult) => void; stdin: string }) {
   const [code, setCode] = useState<string>(() => {
-    return localStorage.getItem("gen.cb") ?? `// Hi! - write your program here\nexit(0);\n`;
+    return localStorage.getItem("mylang.code") ?? `// Hello — write program here\nexit 0\n`;
   });
   const editorRef = useRef<any>(null);
   const [running, setRunning] = useState(false);
@@ -58,8 +58,8 @@ export default function CodeEditor({ onRunResult, stdin }: { onRunResult: (r: Ru
           height="100%"
           defaultLanguage="plaintext"
           value={code}
-          onChange={(v) => setCode(v ?? "")}
-          onMount={(editor) => { editorRef.current = editor; }}
+          onChange={(v: any) => setCode(v ?? "")}
+          onMount={(editor: any) => { editorRef.current = editor; }}
           options={{
             fontSize: 14,
             minimap: { enabled: false },
