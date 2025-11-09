@@ -1,22 +1,61 @@
-import React from "react";
+import { Box, Button, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { runSource } from "../lib/api";
+import { toaster } from "./ui/toaster";
 
-export default function OutputPanel({ output }: { output: { stdout: string; stderr: string; exitCode: number } | null }) {
-  if (!output) {
-    return <div className="p-3 text-sm text-gray-400">No output yet</div>;
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+ const OutputPanel = ({ editorRef }: { editorRef: any }) => {
+  const [output, setOutput] = useState<[string, string, number] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const runCode = async () => {
+    const sourceCode = editorRef.current.getValue();
+    if (!sourceCode) return;
+    try {
+      setIsLoading(true);
+      const {stdout, stderr, exitCode} = await runSource(sourceCode);
+      const result : [string, string, number] = [stdout, stderr, exitCode];
+      setOutput(result);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) { 
+      console.log(error);
+      toaster.create({
+        description: 'message' in error ? error.message : "Unable to run code",
+        title:"An error occurred.",
+        type:"error",
+        closable: true,
+        duration:6000,
+      })
+     } 
+    finally {
+      setIsLoading(false);
+    }
   }
+
   return (
-    <div className="flex-1 p-3 overflow-auto text-sm">
-      <div className="mb-3">
-        <div className="text-xs text-gray-300">Exit code: <span className="font-mono">{output.exitCode}</span></div>
-      </div>
-      <div className="mb-2">
-        <div className="text-xs text-gray-300">STDOUT</div>
-        <pre className="bg-black bg-opacity-40 p-2 rounded text-white whitespace-pre-wrap">{output.stdout || "(empty)"}</pre>
-      </div>
-      <div>
-        <div className="text-xs text-gray-300">STDERR</div>
-        <pre className="bg-black bg-opacity-40 p-2 rounded text-red-300 whitespace-pre-wrap">{output.stderr || "(empty)"}</pre>
-      </div>
-    </div>
+    <Box w="50%">
+      <Text mb={2} fontSize="lg">Output</Text>
+      <Button
+        variant="outline"
+        colorPalette="green"
+        mb={4}
+        loading={isLoading}
+        loadingText="Running..."
+        onClick={runCode}>
+          Run Code
+      </Button>
+      <Box
+        height="75vh"
+        p={2}
+        border="1px solid"
+        borderRadius={4}
+        borderColor="#333">
+        {
+          output ? output : 'Click "Run Code" to see the output here' 
+        }
+      </Box>
+    </Box>
   );
 }
+
+export default OutputPanel;
