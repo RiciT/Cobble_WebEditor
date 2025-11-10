@@ -8,7 +8,8 @@ import { useToast } from "@chakra-ui/toast";
 
 const CodeEditor = () => {
   const editorRef = useRef(null);
-  const [value, setValue] = useState(() => localStorage.getItem("cobble.code") ?? "//Hi - start typing here");
+  const defValue = "//Fibonacci sequence\ndef counter = 5;\ndef res = 1;\ndef temp = 1;\ndef helper = 1;\nwhile (counter) {\n    counter = counter - 1;\n    res = temp + helper;\n    temp = helper;\n    helper = res;\n}\n//exit code is clamped at 127!!\nexit(res);";
+  const [value, setValue] = useState(() => localStorage.getItem("cobble.code") ?? defValue);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
@@ -19,12 +20,11 @@ const CodeEditor = () => {
 
   //for some reason this part does not work the preventDefault() part seems to work however the toaster is not 
   //and neither the console.log so i image the preventDefault() isnt working either and ctrl+s not doing anything
-  //is just an artifat of some other uncaught error using useEffect
+  //is just an artifact of some other uncaught error using useEffect
   
   // Handle Ctrl+Enter for run AND Ctrl+S for save
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      console.log("effect");
       // Run code
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
@@ -34,7 +34,6 @@ const CodeEditor = () => {
       // Save code
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault(); // Prevent browser save
-        console.log("aa");
         localStorage.setItem("cobble.code", value);
         toast({
           title: "Code saved",
@@ -56,7 +55,7 @@ const CodeEditor = () => {
             height="90vh"
             theme="cobble-dark"
             defaultLanguage="cobble"
-            defaultValue="//Hi - start typing here"
+            defaultValue={defValue}
             onMount={onMount}
             value={value}
             options={{
