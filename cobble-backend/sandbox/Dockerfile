@@ -3,6 +3,8 @@ FROM debian:stable-slim
 
 # Install whatever dependencies your compiler needs
 RUN apt-get update && apt-get install -y \
+  nasm \
+  build-essential \
   gcc g++ make \
   && rm -rf /var/lib/apt/lists/*
 

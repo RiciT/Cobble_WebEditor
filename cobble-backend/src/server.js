@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import express from "express";
 import cors from "cors";
 import fs from "fs";
-import { execFile } from "child_process";
-import { promisify } from "util";
 import path from "path";
+import { exec } from "child_process";
 
 const app = express();
 const PORT = 8080;
@@ -12,32 +10,43 @@ const PORT = 8080;
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json({ limit: "1mb" }));
 
-const execFileAsync = promisify(execFile);
+// Helper to run shell commands and capture stdout/stderr
+function execAsync(command) {
+  return new Promise((resolve) => {
+    exec(command, (error, stdout, stderr) => {
+      resolve({
+        stdout: stdout?.toString() ?? "",
+        stderr: stderr?.toString() ?? "",
+        exitCode: error?.code ?? 0,
+      });
+    });
+  });
+}
 
-// Routes
+// POST /run
 app.post("/run", async (req, res) => {
   const source = req.body.source;
-  if (!source) { return res.status(400).json({ error: "Bad Request: No source code"})}
-  const nameAddOn = Date.now();
-  const folder = "../programs/";
-  const tempSourceFile = `out${nameAddOn}.cb`;
+  if (!source) return res.status(400).json({ error: "No source code provided" });
 
-  fs.writeFileSync(folder + tempSourceFile, source, "utf8");
+  const tempDir = fs.mkdtempSync("/tmp/cobble_");
+  const sourceFile = path.join(tempDir, "program.cb");
+  fs.writeFileSync(sourceFile, source, "utf8");
 
   try {
-    //Running compiler
-    const compiledFile = folder + tempSourceFile.substring(0, tempSourceFile.length - 3);
-    const compilerPath = "../../../Cobble_Compiler/cmake-build-debug/cobble";
-    
-    await execFileAsync(compilerPath, [folder + tempSourceFile, "../programs/", nameAddOn]);
+    const dockerCmd = `
+      docker run --rm \
+        -v ${tempDir}:/workspace \
+        --network none \
+        --memory=256m \
+        --cpus=1 \
+        --pids-limit=64 \
+        cobble-sandbox \
+        sh -c "/usr/local/bin/cobble /workspace/program.cb /workspace/ ; chmod +x /workspace/out ; /workspace/out"
+      `;
 
-    const {stdout, stderr, exitCode} = await execFileAsync(compiledFile)
-  
-    console.log("Received source:", req.body.source);
-    res.json({ stdout: stdout, stderr: stderr, exitCode: exitCode });
+    const result = await execAsync(dockerCmd);
 
-    fs.unlink(tempSourceFile, () => {});
-    fs.unlink(compiledFile, () => {});
+    res.json(result);
   } catch (err) {
     console.error("Error running code:", err);
     res.json({
@@ -45,6 +54,8 @@ app.post("/run", async (req, res) => {
       stderr: err.stderr || err.message,
       exitCode: err.code ?? -1,
     });
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
 
