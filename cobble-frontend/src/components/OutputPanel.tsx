@@ -1,11 +1,11 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, Text, Toaster } from "@chakra-ui/react";
 import { useState } from "react";
 import { runSource } from "../lib/api";
 import { toaster } from "./ui/toaster";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
  const OutputPanel = ({ editorRef }: { editorRef: any }) => {
-  const [output, setOutput] = useState<[string, string, number] | null>(null);
+  const [output, setOutput] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const runCode = async () => {
@@ -15,7 +15,9 @@ import { toaster } from "./ui/toaster";
       setIsLoading(true);
       const {stdout, stderr, exitCode} = await runSource(sourceCode);
       const result : [string, string, number] = [stdout, stderr, exitCode];
-      setOutput(result);
+      const outputString : string = result[0] + " Exited with: code " + result[2];
+
+      setOutput(outputString);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) { 
       console.log(error);
@@ -54,7 +56,7 @@ import { toaster } from "./ui/toaster";
           output ? output : 'Click "Run Code" to see the output here' 
         }
       </Box>
-    </Box>
+    </Box> 
   );
 }
 
