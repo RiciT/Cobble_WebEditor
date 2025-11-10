@@ -1,12 +1,13 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { runSource } from "../lib/api";
-import { toaster } from "./ui/toaster";
+import { useToast } from "@chakra-ui/toast";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
  const OutputPanel = ({ editorRef }: { editorRef: any }) => {
   const [output, setOutput] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
   const runCode = async () => {
     const sourceCode = editorRef.current.getValue();
@@ -21,12 +22,12 @@ import { toaster } from "./ui/toaster";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) { 
       console.log(error);
-      toaster.create({
+      toast({
         description: 'message' in error ? error.message : "Unable to run code",
         title:"An error occurred.",
-        type:"error",
-        closable: true,
-        duration:6000,
+        status:"error",
+        isClosable: true,
+        duration:2000,
       })
      } 
     finally {
