@@ -1,7 +1,7 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { runSource } from "../lib/api";
-import { useToast } from "@chakra-ui/toast";
+import { useToast, Toast } from "@chakra-ui/toast";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
  const OutputPanel = ({ editorRef }: { editorRef: any }) => {
