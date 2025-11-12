@@ -17,3 +17,5 @@ WORKDIR /sandbox
 
 # Default command — can be overridden at runtime
 CMD ["/bin/bash"]
+
+#docker build -t cobble-sandbox -f Cobble_WebEditor/cobble-backend/sandbox/Dockerfile run this in Cobble_language to rebuild the docker
