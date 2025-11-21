@@ -8,7 +8,7 @@ import { useToast } from "@chakra-ui/toast";
 
 const CodeEditor = () => {
   const editorRef = useRef(null);
-  const defValue = "//Fibonacci sequence\ndef counter = 5;\ndef res = 1;\ndef temp = 1;\ndef helper = 1;\nwhile (counter) {\n    counter = counter - 1;\n    res = temp + helper;\n    temp = helper;\n    helper = res;\n}\n//exit code is clamped at 127!!\nexit(res);";
+  const defValue = "//Fibonacci sequence\nfunc fib(def count) {\n    def counter = count;\n    def res = 1;\n    def temp = 1;\n    def helper = 0;\n    while (counter) {\n        counter = counter - 1;\n        res = temp + helper;\n        temp = helper;\n        helper = res;\n    }\n    return res;\n}\n\nprint(fib(15));";
   const [value, setValue] = useState(() => localStorage.getItem("cobble.code") ?? defValue);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onMount = (editor: any, monaco: any) => {
