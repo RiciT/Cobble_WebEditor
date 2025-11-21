@@ -5,12 +5,12 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
 
     monacoInstance.languages.setMonarchTokensProvider("cobble", {
         keywords: [
-            "if", "elseif", "else", "while", "def",
+            "if", "elseif", "else", "while", "def", "func", "true", "false", "return", "int", "char", "bool",
         ],
         operators: [
-            "=", "+", "-", "*", "/", 
+            "=", "+", "-", "*", "/", "!", ">", "<",
         ],
-        symbols: /[=><!~?:&|+\-*/^%]+/,
+        symbols: /[=><!~?:&|+\-*/^%,]+/,
 
         tokenizer: {
             root: [
@@ -43,7 +43,7 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
             { token: "number", foreground: "B5CEA8" },
             { token: "string", foreground: "CE9178" },
             { token: "comment", foreground: "6A9955", fontStyle: "italic" },
-            { token: "operator", foreground: "D4D4D4" },
+            { token: "operator", foreground: "67F4F4" },
             { token: "identifier", foreground: "DCDCAA" },
         ],
         colors: {
@@ -70,37 +70,51 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
             range,
           },
           {
+            label: "func",
+            kind: monaco.languages.CompletionItemKind.Keyword,
+            insertText: "func $3 $2($1)\n{\n\t$0\n}",
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range,
+          },
+          {
+            label: "print",
+            kind: monaco.languages.CompletionItemKind.Function,
+            insertText: "print($0);",
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range,
+          },
+          {
             label: "while",
             kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: "while ($1) {\n\t$0\n}",
+            insertText: "while ($1)\n{\n\t$0\n}",
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range,
           },
           {
             label: "if",
             kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: "if ($1) {\n\t$0\n}",
+            insertText: "if ($1)\n{\n\t$0\n}",
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range,
           },
           {
             label: "elseif",
             kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: "elseif ($1) {\n\t$0\n}",
+            insertText: "elseif ($1)\n{\n\t$0\n}",
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range,
           },
           {
             label: "else",
             kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: "else {\n\t$0\n}",
+            insertText: "else\n{\n\t$0\n}",
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range,
           },
           {
             label: "def",
             kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: "def $1 = $0;",
+            insertText: "def $2 $1 = $0;",
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range,
           },
@@ -120,6 +134,14 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
                 { value: "Exits with the given exit code." },
             ],
             };
+        }
+        else if(word?.word === "print") {
+          return {
+            contents: [
+              { value: "**print(arg)**" },
+              { value: "Prints the given argument to the standard output." }
+            ]
+          };
         }
         return null;
         },
