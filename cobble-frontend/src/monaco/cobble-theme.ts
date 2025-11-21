@@ -5,7 +5,10 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
 
     monacoInstance.languages.setMonarchTokensProvider("cobble", {
         keywords: [
-            "if", "elseif", "else", "while", "def", "func", "true", "false", "return", "int", "char", "bool",
+            "if", "elseif", "else", "while", "def", "func", "true", "false", "return",
+        ],
+        types: [
+           "int", "char", "bool",
         ],
         operators: [
             "=", "+", "-", "*", "/", "!", ">", "<",
@@ -17,6 +20,7 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
                 [/[a-zA-Z_]\w*/, {
                     cases: {
                         "@keywords": "keyword",
+                        "@types": "type",
                         "@default": "identifier",
                     },
                 }],
@@ -45,6 +49,8 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
             { token: "comment", foreground: "6A9955", fontStyle: "italic" },
             { token: "operator", foreground: "67F4F4" },
             { token: "identifier", foreground: "DCDCAA" },
+            { token: "identifier.function", foreground: "9CDCFE"},
+            { token: "type", foreground: "1AAFB0" },
         ],
         colors: {
             "editor.background": "#292929ff",
