@@ -16,7 +16,7 @@ import { useToast, Toast } from "@chakra-ui/toast";
       setIsLoading(true);
       const {stdout, stderr, exitCode} = await runSource(sourceCode);
       const result : [string, string, number] = [stdout, stderr, exitCode];
-      const outputString : string = result[0] + " Exited with: code " + result[2] + (result[1] == "" ? "" : "\nError: " + result[1]);
+      const outputString : string = result[0] + (result[2] == 0 ? "" : " Exited with: code " + result[2]) + (result[1] == "" ? "" : "\nError: " + result[1]);
 
       setOutput(outputString);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
