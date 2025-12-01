@@ -5,7 +5,7 @@ export function registerCobbleLanguage(monacoInstance: typeof monaco) {
 
     monacoInstance.languages.setMonarchTokensProvider("cobble", {
         keywords: [
-            "if", "elseif", "else", "while", "def", "func", "true", "false", "return",
+            "if", "elseif", "else", "while", "def", "func", "true", "false", "return", "exit", "print", 
         ],
         types: [
            "int", "char", "bool",
